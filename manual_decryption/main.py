@@ -10,8 +10,8 @@ import sys
 
 
 # IN VALUES HERE!
-PETNAME = 
-MDB_PASSWORD = 
+PETNAME = "poetic-hound"
+MDB_PASSWORD = "password123"
 APP_USER = "app_user"
 CA_PATH = "/etc/pki/tls/certs/ca.cert"
 
@@ -61,7 +61,7 @@ def decrypt_data(client_encryption, data):
     if type(data) == Binary and data.subtype == 6:
 
       # PUT YOUR DECRYPTION CODE HERE
-      decrypted_data = 
+      decrypted_data = client_encryption.decrypt(data)
 
       return decrypted_data
     else:
@@ -211,7 +211,7 @@ def main():
   try:
 
     # WRITE CODE TO ENCRYPT THE NAME WE ARE GOING TO QUERY FOR
-    encrypted_name = 
+    encrypted_name = payload["name"]["firstName"]
     encrypted_doc = client[encrypted_db_name][encrypted_coll_name].find_one({"name.firstName": encrypted_name})
     print(encrypted_doc)
 

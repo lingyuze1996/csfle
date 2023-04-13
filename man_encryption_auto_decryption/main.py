@@ -11,8 +11,8 @@ from urllib.parse import quote_plus
 import sys
 
 # IN VALUES HERE!
-PETNAME = 
-MDB_PASSWORD = 
+PETNAME = "poetic-hound" 
+MDB_PASSWORD = "password123"
 APP_USER = "app_user"
 CA_PATH = "/etc/pki/tls/certs/ca.cert"
 
@@ -34,7 +34,7 @@ def mdb_client(connection_string, auto_encryption_opts=None):
   """
 
   try:
-    client = MongoClient(connection_string)
+    client = MongoClient(connection_string, auto_encryption_opts=auto_encryption_opts)
     client.admin.command('hello')
     return client, None
   except (ServerSelectionTimeoutError, ConnectionFailure) as e:
@@ -93,7 +93,7 @@ def main():
   auto_encryption = AutoEncryptionOpts(
     kms_provider,
     keyvault_namespace,
-    schema_map = , # WHAT DO WE PUT HERE?
+    schema_map = {}, # WHAT DO WE PUT HERE?
     bypass_auto_encryption = True, # we do not want to autoencrypt
     kms_tls_options = {
       "kmip": {
@@ -176,7 +176,7 @@ def main():
 
   # WRITE YOUR QUERY HERE FOR AUTODECRYPTION. REMEMBER WHICH CLIENT TO USE!
   try:
-    encrypted_doc = 
+    encrypted_doc = encrypted_client[encrypted_db_name][encrypted_coll_name].find_one()
 
     print(encrypted_doc)
   except EncryptionError as e:

@@ -190,8 +190,8 @@ public class App {
         App app = new App();
 
         // VALUES IN HERE!
-        String PETNAME = "";
-        String MDB_PASSWORD = "";
+        String PETNAME = "poetic-hound";
+        String MDB_PASSWORD = "password123";
         String APP_USER = "app_user";
 
         // Obviously this should not be hardcoded
@@ -238,7 +238,9 @@ public class App {
 
             // WRITE CODE HERE TO ENCRYPT THE APPROPRIATE FIELDS
             // Don't forget to handle to event of name.otherNames being null
-
+            HashMap<String> namePayload = new HashMap<>();
+            
+            clientEncryption 
 
             // Test if the data is encrypted
             for (String fieldName : new String[]{"first_name", "last_name"}) {

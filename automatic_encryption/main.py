@@ -9,8 +9,8 @@ import names
 import sys
 
 # IN VALUES HERE!
-PETNAME = 
-MDB_PASSWORD = 
+PETNAME = "poetic-hound"
+MDB_PASSWORD = "password123"
 APP_USER = "app_user"
 CA_PATH = "/etc/pki/tls/certs/ca.cert"
 

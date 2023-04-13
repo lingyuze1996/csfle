@@ -10,8 +10,8 @@ import sys
 
 
 # IN VALUES HERE!
-PETNAME = 
-MDB_PASSWORD = 
+PETNAME = "poetic-hound"
+MDB_PASSWORD = "password123"
 APP_USER = "app_user"
 CA_PATH = "/etc/pki/tls/certs/ca.cert"
 
@@ -114,34 +114,42 @@ def main():
   try:
 
     # retrieve the DEK UUID
-    data_key_id_1 = # Put code here to find the _id of the DEK we created previously
+    data_key_id_1 = client_encryption.get_key_by_alt_name("dataKey1")["_id"]# Put code here to find the _id of the DEK we created previously
     if data_key_id_1 is None:
       print("Failed to find DEK")
       sys.exit()
 
     # WRITE CODE HERE TO ENCRYPT THE APPROPRIATE FIELDS
     # Don't forget to handle to event of name.otherNames being null
-
+    first_name_raw = payload["name"]["firstName"]
+    last_name_raw = payload["name"]["lastName"]
+    option_det = Algorithm.AEAD_AES_256_CBC_HMAC_SHA_512_Deterministic
+    encrypted_first_name = client_encryption.encrypt(first_name_raw, option_det, data_key_id_1)
+    encrypted_last_name = client_encryption.encrypt(last_name_raw, option_det, data_key_id_1)
     # Do deterministic fields
-    payload["name"]["firstName"] = # Put code here to encrypt the data
-    payload["name"]["lastName"] = # Put code here to encrypt the data
+    payload["name"]["firstName"] = encrypted_first_name
+    payload["name"]["lastName"] = encrypted_last_name
 
+    option_ran = Algorithm.AEAD_AES_256_CBC_HMAC_SHA_512_Random
     # Do random fields
     if payload["name"]["otherNames"] is None:
       # put code here to delete this field if None
+      del payload["name"]["otherNames"]
     else:
-      payload["name"]["otherNames"] = # Put code here to encrypt the data
-    payload["address"] = # Put code here to encrypt the data
-    payload["dob"] = # Put code here to encrypt the data
-    payload["phoneNumber"] = # Put code here to encrypt the data
-    payload["salary"] = # Put code here to encrypt the data
-    payload["taxIdentifier"] = # Put code here to encrypt the data
+      payload["name"]["otherNames"] = client_encryption.encrypt(payload["name"]["otherNames"], option_ran, data_key_id_1)# Put code here to encrypt the data
+      #for k in payload["address"]:
+      #    payload["address"][k] = client_encryption.encrypt(payload["address"][k], option_ran, data_key_id_1)      
+    payload["address"] = client_encryption.encrypt(payload["address"], option_ran, data_key_id_1)# Put code here to encrypt the data
+    payload["dob"] = client_encryption.encrypt(payload["dob"], option_ran, data_key_id_1)# Put code here to encrypt the data
+    payload["phoneNumber"] = client_encryption.encrypt(payload["phoneNumber"], option_ran, data_key_id_1)# Put code here to encrypt the data
+    payload["salary"] = client_encryption.encrypt(payload["salary"], option_ran, data_key_id_1)# Put code here to encrypt the data
+    payload["taxIdentifier"] = client_encryption.encrypt(payload["taxIdentifier"], option_ran, data_key_id_1)# Put code here to encrypt the data
 
 
     # Test if the data is encrypted
     for data in [ payload["name"]["firstName"], payload["name"]["lastName"], payload["address"], payload["dob"], payload["phoneNumber"], payload["salary"], payload["taxIdentifier"]]:
       if type(data) is not Binary and data.subtype != 6:
-        print("Data is not encrypted")
+        print("Data is not encrypted", data)
         sys.exit(-1)
 
     if "otherNames" in payload["name"] and payload["name"]["otherNames"] is None:
